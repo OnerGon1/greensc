@@ -242,7 +242,7 @@ export default function PriceListTab({ prices, setPrices, currency, onManualSync
           gap: '12px',
         }}
       >
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1.2fr', gap: '12px' }}>
+        <div className="pricelist-filters-grid">
           {/* 1. Brand Selection Dropdown */}
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">
@@ -361,18 +361,18 @@ export default function PriceListTab({ prices, setPrices, currency, onManualSync
             {filteredPrices.length > 0 ? (
               filteredPrices.map((item) => (
                 <tr key={item.id}>
-                  <td>
+                  <td data-label="Бренд">
                     <span className="badge badge-brand">{item.brand}</span>
                   </td>
-                  <td style={{ fontWeight: 700, color: '#f59e0b' }}>{item.model}</td>
-                  <td style={{ fontWeight: 500 }}>{item.serviceName}</td>
-                  <td>
+                  <td data-label="Модель" style={{ fontWeight: 700, color: '#f59e0b' }}>{item.model}</td>
+                  <td data-label="Услуга" style={{ fontWeight: 500 }}>{item.serviceName}</td>
+                  <td data-label="Категория">
                     <span className="badge badge-category">{item.category || 'Прочее'}</span>
                   </td>
-                  <td style={{ fontWeight: 700, color: '#60a5fa', fontSize: '1rem' }}>
+                  <td data-label="Стоимость" style={{ fontWeight: 700, color: '#60a5fa', fontSize: '1rem' }}>
                     {formatCurrency(item.price, currency)}
                   </td>
-                  <td>
+                  <td data-label="Примечание">
                     {item.comment ? (
                       <span style={{ fontSize: '0.82rem', color: '#10b981', background: 'rgba(16, 185, 129, 0.1)', padding: '4px 8px', borderRadius: '6px', border: '1px solid rgba(16, 185, 129, 0.25)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         <MessageSquare size={12} /> {item.comment}
@@ -381,7 +381,7 @@ export default function PriceListTab({ prices, setPrices, currency, onManualSync
                       <span style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>—</span>
                     )}
                   </td>
-                  <td style={{ textAlign: 'right' }}>
+                  <td data-label="Действия" style={{ textAlign: 'right' }}>
                     <div style={{ display: 'inline-flex', gap: '6px', alignItems: 'center' }}>
                       {/* PROMINENT "ВЫБРАТЬ" BUTTON FOR CALCULATOR */}
                       {onSelectForCalculator && (

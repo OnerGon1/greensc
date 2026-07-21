@@ -66,6 +66,12 @@ body {
   padding: 24px 16px 48px 16px;
 }
 
+@media (max-width: 768px) {
+  .app-container {
+    padding: 12px 10px 24px 10px;
+  }
+}
+
 /* Header */
 .app-header {
   display: flex;
@@ -76,6 +82,16 @@ body {
   border-bottom: 1px solid var(--border-color);
   flex-wrap: wrap;
   gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+  }
 }
 
 .logo-area {
@@ -136,6 +152,13 @@ body {
   overflow-x: auto;
 }
 
+@media (max-width: 768px) {
+  .nav-tabs {
+    margin-bottom: 16px;
+    border-radius: var(--radius-md);
+  }
+}
+
 .nav-btn {
   display: flex;
   align-items: center;
@@ -150,6 +173,13 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .nav-btn {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
 }
 
 .nav-btn:hover {
@@ -171,6 +201,12 @@ body {
   padding: 24px;
   box-shadow: var(--shadow-card);
   position: relative;
+}
+
+@media (max-width: 768px) {
+  .glass-card {
+    padding: 16px 12px;
+  }
 }
 
 .card-title {
@@ -302,6 +338,56 @@ body {
 @media (max-width: 900px) {
   .grid-2, .grid-3, .grid-4 {
     grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* RESPONSIVE LAYOUT GRIDS FOR TABS */
+.calculator-layout-grid {
+  display: grid;
+  grid-template-columns: 290px 1fr 340px;
+  gap: 20px;
+  align-items: stretch;
+}
+
+@media (max-width: 1100px) {
+  .calculator-layout-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.pricelist-filters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.2fr;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .pricelist-filters-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* Mobile Toggles for Math Calc */
+.mobile-only {
+  display: none;
+}
+.math-calc-sidebar {
+  display: block;
+}
+
+@media (max-width: 1100px) {
+  .mobile-only {
+    display: block;
+  }
+  .math-calc-sidebar {
+    display: none;
+  }
+  .math-calc-sidebar.show {
+    display: block;
+    margin-bottom: 16px;
   }
 }
 
@@ -341,6 +427,51 @@ body {
   background: var(--bg-card-hover);
 }
 
+/* RESPONSIVE MOBILE TABLE CARDS */
+@media (max-width: 768px) {
+  .custom-table {
+    display: block;
+    width: 100%;
+  }
+  .custom-table thead {
+    display: none; /* Hide header columns on mobile */
+  }
+  .custom-table tbody {
+    display: block;
+    width: 100%;
+  }
+  .custom-table tr {
+    display: block;
+    border: 1px solid var(--border-color);
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.01);
+    border-radius: var(--radius-md);
+    padding: 12px;
+  }
+  .custom-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    text-align: right;
+    font-size: 0.88rem;
+  }
+  .custom-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--text-muted);
+    float: left;
+    text-align: left;
+    margin-right: 12px;
+  }
+  .custom-table td:last-child {
+    border-bottom: none;
+    justify-content: flex-end;
+    padding-top: 12px;
+  }
+}
+
 /* Badges */
 .badge {
   display: inline-block;
@@ -368,6 +499,12 @@ body {
   border: 1px solid rgba(16, 185, 129, 0.3);
   border-radius: var(--radius-lg);
   padding: 24px;
+}
+
+@media (max-width: 768px) {
+  .calc-result-box {
+    padding: 16px 12px;
+  }
 }
 
 .calc-total-price {

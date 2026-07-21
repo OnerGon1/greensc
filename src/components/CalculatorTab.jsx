@@ -558,6 +558,7 @@ export default function CalculatorTab({ prices, settings, prefilledData, clearPr
   const [copied, setCopied] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [hasPrefilledBanner, setHasPrefilledBanner] = useState(false);
+  const [showMobileMath, setShowMobileMath] = useState(false);
 
   // Auto pre-fill when manager clicks "Выбрать" in PriceListTab (Appends as next service!)
   useEffect(() => {
@@ -788,14 +789,27 @@ export default function CalculatorTab({ prices, settings, prefilledData, clearPr
   };
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '270px 1fr 340px', gap: '20px', alignItems: 'stretch' }}>
-      {/* 1. LEFT SIDEBAR: Real iOS Style Calculator */}
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <IosCalculator
-          onApplyResultToPartCost={handleApplyMathToPartCost}
-          currency={settings.currency}
-        />
+    <div>
+      {/* Mobile Toggle for Math Calculator */}
+      <div className="mobile-only" style={{ marginBottom: '16px' }}>
+        <button
+          className="btn btn-secondary"
+          style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px', alignItems: 'center', padding: '12px' }}
+          onClick={() => setShowMobileMath(!showMobileMath)}
+        >
+          <Calculator size={18} />
+          {showMobileMath ? 'Скрыть обычный калькулятор' : 'Показать обычный калькулятор'}
+        </button>
       </div>
+
+      <div className="calculator-layout-grid">
+        {/* 1. LEFT SIDEBAR: Real iOS Style Calculator */}
+        <div className={`math-calc-sidebar ${showMobileMath ? 'show' : ''}`} style={{ display: 'flex', flexDirection: 'column' }}>
+          <IosCalculator
+            onApplyResultToPartCost={handleApplyMathToPartCost}
+            currency={settings.currency}
+          />
+        </div>
 
       {/* 2. MIDDLE COLUMN: Clean & Uncluttered Multi-Service Inputs */}
       <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -1129,6 +1143,7 @@ export default function CalculatorTab({ prices, settings, prefilledData, clearPr
               <strong style={{ color: 'var(--text-main)' }}>Стиль iOS:</strong> Вы можете кликнуть по калькулятору и вводить цифры прямо на клавиатуре.
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>
