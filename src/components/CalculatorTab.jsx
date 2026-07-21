@@ -804,7 +804,7 @@ export default function CalculatorTab({ prices, settings, prefilledData, clearPr
 
       <div className="calculator-layout-grid">
         {/* 1. LEFT SIDEBAR: Real iOS Style Calculator */}
-        <div className={`math-calc-sidebar ${showMobileMath ? 'show' : ''}`} style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className={`math-calc-sidebar ${showMobileMath ? 'show' : ''}`}>
           <IosCalculator
             onApplyResultToPartCost={handleApplyMathToPartCost}
             currency={settings.currency}
