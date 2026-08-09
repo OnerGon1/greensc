@@ -741,8 +741,7 @@ export default function CalculatorTab({ prices, settings, prefilledData, clearPr
 
   // Copy detailed breakdown for the master/CRM
   const handleCopyForMaster = () => {
-    let text = `Устройство: ${inferredBrand} ${inferredModel}\n\n`;
-    text += `Раскладка для мастера/CRM:\n`;
+    let text = '';
     
     multiCalculation.itemsBreakdown.forEach((item, i) => {
       const itemSubtotal = item.work + item.part;
@@ -754,10 +753,6 @@ export default function CalculatorTab({ prices, settings, prefilledData, clearPr
       text += `   - Итого к оплате (безнал): ${formatCurrency(item.sum, settings.currency)}\n`;
       text += `   - Итого к оплате (наличные): ${formatCurrency(roundedItemSubtotal, settings.currency)}\n\n`;
     });
-    
-    if (note) {
-      text += `Примечание: ${note}`;
-    }
 
     navigator.clipboard.writeText(text.trim());
     setCopiedMaster(true);
