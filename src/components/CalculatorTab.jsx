@@ -556,6 +556,7 @@ export default function CalculatorTab({ prices, settings, prefilledData, clearPr
 
   // Notifications
   const [copied, setCopied] = useState(false);
+  const [copiedMaster, setCopiedMaster] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [hasPrefilledBanner, setHasPrefilledBanner] = useState(false);
   const [showMobileMath, setShowMobileMath] = useState(false);
@@ -736,6 +737,38 @@ export default function CalculatorTab({ prices, settings, prefilledData, clearPr
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
+  };
+
+  // Copy detailed breakdown for the master/CRM
+  const handleCopyForMaster = () => {
+    let text = `Устройство: ${inferredBrand} ${inferredModel}\n\n`;
+    text += `Раскладка для мастера/CRM:\n`;
+    
+    multiCalculation.itemsBreakdown.forEach((item, i) => {
+      const itemSubtotal = item.work + item.part;
+      const roundedItemSubtotal = applyRounding(itemSubtotal, settings.roundingRule);
+      
+      text += `${i + 1}. ${item.name}\n`;
+      text += `   - Работа (чистая): ${formatCurrency(item.work, settings.currency)}\n`;
+      text += `   - Запчасть (себестоимость): ${formatCurrency(item.part, settings.currency)}\n`;
+      text += `   - Итого к оплате (безнал): ${formatCurrency(item.sum, settings.currency)}\n`;
+      text += `   - Итого к оплате (наличные): ${formatCurrency(roundedItemSubtotal, settings.currency)}\n\n`;
+    });
+    
+    text += `Общий итог:\n`;
+    text += `Всего за работу: ${formatCurrency(multiCalculation.workPrice, settings.currency)}\n`;
+    text += `Всего за запчасти: ${formatCurrency(multiCalculation.partPrice, settings.currency)}\n`;
+    text += `Итого к оплате (безнал): ${formatCurrency(multiCalculation.finalPrice, settings.currency)}\n`;
+    text += `Итого к оплате (наличные): ${formatCurrency(multiCalculation.subtotal, settings.currency)}\n`;
+    text += `Прибыль сервиса: ${formatCurrency(multiCalculation.grossProfit, settings.currency)}`;
+    
+    if (note) {
+      text += `\n\nПримечание: ${note}`;
+    }
+
+    navigator.clipboard.writeText(text);
+    setCopiedMaster(true);
+    setTimeout(() => setCopiedMaster(false), 2500);
   };
 
   // Save to history
@@ -1116,6 +1149,27 @@ export default function CalculatorTab({ prices, settings, prefilledData, clearPr
             >
               {copied ? <Check size={18} /> : <Copy size={18} />}
               {copied ? 'Скопировано в буфер!' : 'Скопировать КП для клиента'}
+            </button>
+
+            <button
+              className="btn btn-secondary"
+              style={{ 
+                width: '100%', 
+                fontSize: '1.0rem', 
+                padding: '12px',
+                borderColor: 'rgba(59, 130, 246, 0.4)',
+                background: 'rgba(59, 130, 246, 0.05)',
+                color: '#60a5fa',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
+              onClick={handleCopyForMaster}
+              disabled={!multiCalculation.finalPrice}
+            >
+              {copiedMaster ? <Check size={18} /> : <Copy size={18} />}
+              {copiedMaster ? 'Скопировано для мастера!' : 'Скопировать для мастера (CRM)'}
             </button>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
