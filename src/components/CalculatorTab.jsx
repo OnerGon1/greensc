@@ -755,18 +755,11 @@ export default function CalculatorTab({ prices, settings, prefilledData, clearPr
       text += `   - Итого к оплате (наличные): ${formatCurrency(roundedItemSubtotal, settings.currency)}\n\n`;
     });
     
-    text += `Общий итог:\n`;
-    text += `Всего за работу: ${formatCurrency(multiCalculation.workPrice, settings.currency)}\n`;
-    text += `Всего за запчасти: ${formatCurrency(multiCalculation.partPrice, settings.currency)}\n`;
-    text += `Итого к оплате (безнал): ${formatCurrency(multiCalculation.finalPrice, settings.currency)}\n`;
-    text += `Итого к оплате (наличные): ${formatCurrency(multiCalculation.subtotal, settings.currency)}\n`;
-    text += `Прибыль сервиса: ${formatCurrency(multiCalculation.grossProfit, settings.currency)}`;
-    
     if (note) {
-      text += `\n\nПримечание: ${note}`;
+      text += `Примечание: ${note}`;
     }
 
-    navigator.clipboard.writeText(text);
+    navigator.clipboard.writeText(text.trim());
     setCopiedMaster(true);
     setTimeout(() => setCopiedMaster(false), 2500);
   };
