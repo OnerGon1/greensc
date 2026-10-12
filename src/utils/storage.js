@@ -1,9 +1,11 @@
 import { DEFAULT_PRICES, DEFAULT_SETTINGS, DEFAULT_HISTORY } from '../data/initialData';
+import { DEFAULT_KNOWLEDGE_BASE } from '../data/initialKnowledgeBase';
 
 const KEYS = {
   PRICES: 'service_prices_v6', // Bumped key for comments column and Android variants
   SETTINGS: 'service_settings_v6',
   HISTORY: 'service_history_v6',
+  KB: 'service_knowledge_base_v1',
 };
 
 export const getStoredPrices = () => {
@@ -57,6 +59,24 @@ export const saveStoredHistory = (history) => {
     localStorage.setItem(KEYS.HISTORY, JSON.stringify(history));
   } catch (e) {
     console.error('Failed to save history to storage', e);
+  }
+};
+
+export const getStoredKnowledgeBase = () => {
+  try {
+    const data = localStorage.getItem(KEYS.KB);
+    return data ? JSON.parse(data) : DEFAULT_KNOWLEDGE_BASE;
+  } catch (e) {
+    console.error('Failed to read knowledge base from storage', e);
+    return DEFAULT_KNOWLEDGE_BASE;
+  }
+};
+
+export const saveStoredKnowledgeBase = (articles) => {
+  try {
+    localStorage.setItem(KEYS.KB, JSON.stringify(articles));
+  } catch (e) {
+    console.error('Failed to save knowledge base to storage', e);
   }
 };
 

@@ -8,13 +8,14 @@ import {
   Percent,
   RefreshCw,
   Clock,
-  ExternalLink,
-  Check
+  Check,
+  BookOpen
 } from 'lucide-react';
 import CalculatorTab from './components/CalculatorTab';
 import PriceListTab from './components/PriceListTab';
 import AnalyticsTab from './components/AnalyticsTab';
 import SettingsTab from './components/SettingsTab';
+import KnowledgeBaseTab from './components/KnowledgeBaseTab';
 
 import {
   getStoredPrices,
@@ -23,6 +24,8 @@ import {
   saveStoredSettings,
   getStoredHistory,
   saveStoredHistory,
+  getStoredKnowledgeBase,
+  saveStoredKnowledgeBase,
   resetAllToDefaults
 } from './utils/storage';
 
@@ -47,6 +50,7 @@ export default function App() {
   const [prices, setPrices] = useState(getStoredPrices);
   const [settings, setSettings] = useState(getStoredSettings);
   const [history, setHistory] = useState(getStoredHistory);
+  const [knowledgeArticles, setKnowledgeArticles] = useState(getStoredKnowledgeBase);
 
   // State to hold data passed from PriceList -> Calculator
   const [prefilledData, setPrefilledData] = useState(null);
@@ -67,6 +71,10 @@ export default function App() {
   useEffect(() => {
     saveStoredHistory(history);
   }, [history]);
+
+  useEffect(() => {
+    saveStoredKnowledgeBase(knowledgeArticles);
+  }, [knowledgeArticles]);
 
   // Live timer tick every 30s to update counters
   useEffect(() => {
@@ -203,6 +211,14 @@ export default function App() {
         </button>
 
         <button
+          className={`nav-btn ${activeTab === 'knowledge' ? 'active' : ''}`}
+          onClick={() => setActiveTab('knowledge')}
+        >
+          <BookOpen size={18} />
+          База знаний ({knowledgeArticles.length})
+        </button>
+
+        <button
           className={`nav-btn ${activeTab === 'settings' ? 'active' : ''}`}
           onClick={() => setActiveTab('settings')}
         >
@@ -239,6 +255,13 @@ export default function App() {
             history={history}
             setHistory={setHistory}
             currency={settings.currency}
+          />
+        </div>
+
+        <div style={{ display: activeTab === 'knowledge' ? 'block' : 'none' }}>
+          <KnowledgeBaseTab
+            articles={knowledgeArticles}
+            setArticles={setKnowledgeArticles}
           />
         </div>
 
