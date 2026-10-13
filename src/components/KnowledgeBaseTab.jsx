@@ -948,31 +948,7 @@ export default function KnowledgeBaseTab({ articles, setArticles }) {
                 {highlightText(readingArticle.title, searchQuery)}
               </h1>
 
-              <div className="kb-reader-info-bar">
-                <span className="kb-info-item">
-                  <Clock size={14} /> Время чтения: {readingArticle.readTime || '3 мин'}
-                </span>
-                {readingArticle.updatedAt && (
-                  <span className="kb-info-item">
-                    Обновлено: {readingArticle.updatedAt}
-                  </span>
-                )}
-                {readingArticle.isPinned && (
-                  <span className="kb-pin-badge">
-                    <Pin size={12} /> Закреплено в регламенте
-                  </span>
-                )}
-              </div>
 
-              {readingArticle.tags && readingArticle.tags.length > 0 && (
-                <div className="kb-reader-tags">
-                  {readingArticle.tags.map(tag => (
-                    <span key={tag} className="kb-tag-chip">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* Modal Body */}
