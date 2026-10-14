@@ -36,6 +36,13 @@ import {
   GOOGLE_SHEET_URL
 } from './utils/googleSync';
 
+import {
+  isSupabaseConnected,
+  fetchArticlesFromCloud,
+  subscribeToKnowledgeBaseSupabase,
+  seedArticlesToCloud
+} from './services/supabase';
+
 export default function App() {
   // Clear deprecated v1-v5 storage cache if present
   useEffect(() => {
@@ -75,6 +82,45 @@ export default function App() {
   useEffect(() => {
     saveStoredKnowledgeBase(knowledgeArticles);
   }, [knowledgeArticles]);
+
+  // Supabase Cloud sync & Realtime listener
+  const [isCloudConnected, setIsCloudConnected] = useState(isSupabaseConnected);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!isSupabaseConnected()) return;
+
+    const initCloud = async () => {
+      try {
+        const cloudArticles = await fetchArticlesFromCloud();
+        if (!isMounted) return;
+        if (cloudArticles && cloudArticles.length > 0) {
+          setKnowledgeArticles(cloudArticles);
+          setIsCloudConnected(true);
+        } else if (cloudArticles && cloudArticles.length === 0) {
+          // Table exists but is empty -> Seed initial articles to Supabase!
+          const current = getStoredKnowledgeBase();
+          await seedArticlesToCloud(current);
+          setIsCloudConnected(true);
+        }
+      } catch (err) {
+        console.error('Cloud articles init error:', err);
+      }
+    };
+
+    initCloud();
+
+    const unsubscribe = subscribeToKnowledgeBaseSupabase((freshArticles) => {
+      if (isMounted && freshArticles && freshArticles.length > 0) {
+        setKnowledgeArticles(freshArticles);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, []);
 
   // Live timer tick every 30s to update counters
   useEffect(() => {
@@ -262,6 +308,7 @@ export default function App() {
           <KnowledgeBaseTab
             articles={knowledgeArticles}
             setArticles={setKnowledgeArticles}
+            isCloudConnected={isCloudConnected}
           />
         </div>
 

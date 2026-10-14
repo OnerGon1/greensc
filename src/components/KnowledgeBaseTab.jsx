@@ -21,9 +21,15 @@ import {
   AlertTriangle,
   FileText,
   ShieldAlert,
-  Hash
+  Hash,
+  Cloud
 } from 'lucide-react';
 import { KB_CATEGORIES, DEFAULT_KNOWLEDGE_BASE } from '../data/initialKnowledgeBase';
+import {
+  saveArticleToCloud,
+  deleteArticleFromCloud,
+  seedArticlesToCloud
+} from '../services/supabase';
 
 const PRESET_TAGS = [
   'цена', 'дорого', 'оригинал', 'копия', 'дисплей', 'экран',
@@ -33,7 +39,7 @@ const PRESET_TAGS = [
   'отказ', 'чек-лист', 'скидка', 'камера', 'корпус', 'динамик', 'разъем'
 ];
 
-export default function KnowledgeBaseTab({ articles, setArticles }) {
+export default function KnowledgeBaseTab({ articles, setArticles, isCloudConnected }) {
   // Filters & Search state
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Все категории');
@@ -364,37 +370,24 @@ export default function KnowledgeBaseTab({ articles, setArticles }) {
 
     if (editingArticle) {
       // Update
-      const updated = articles.map(a => {
-        if (a.id === editingArticle.id) {
-          return {
-            ...a,
-            title: formTitle.trim(),
-            category: finalCategory,
-            subcategory: finalSubcategory,
-            tags: formSelectedTags,
-            summary: formSummary.trim(),
-            content: formContent.trim(),
-            quickScript: formQuickScript.trim(),
-            isPinned: formIsPinned,
-            updatedAt: new Date().toISOString().split('T')[0]
-          };
-        }
-        return a;
-      });
+      const updatedArticle = {
+        ...editingArticle,
+        title: formTitle.trim(),
+        category: finalCategory,
+        subcategory: finalSubcategory,
+        tags: formSelectedTags,
+        summary: formSummary.trim(),
+        content: formContent.trim(),
+        quickScript: formQuickScript.trim(),
+        isPinned: formIsPinned,
+        updatedAt: new Date().toISOString().split('T')[0]
+      };
+      const updated = articles.map(a => a.id === editingArticle.id ? updatedArticle : a);
       setArticles(updated);
+      saveArticleToCloud(updatedArticle);
+
       if (readingArticle && readingArticle.id === editingArticle.id) {
-        setReadingArticle({
-          ...readingArticle,
-          title: formTitle.trim(),
-          category: finalCategory,
-          subcategory: finalSubcategory,
-          tags: formSelectedTags,
-          summary: formSummary.trim(),
-          content: formContent.trim(),
-          quickScript: formQuickScript.trim(),
-          isPinned: formIsPinned,
-          updatedAt: new Date().toISOString().split('T')[0]
-        });
+        setReadingArticle(updatedArticle);
       }
     } else {
       // Create new
@@ -412,6 +405,7 @@ export default function KnowledgeBaseTab({ articles, setArticles }) {
         updatedAt: new Date().toISOString().split('T')[0]
       };
       setArticles([newArticle, ...articles]);
+      saveArticleToCloud(newArticle);
     }
 
     setIsEditorOpen(false);
@@ -423,6 +417,7 @@ export default function KnowledgeBaseTab({ articles, setArticles }) {
     if (window.confirm('Вы уверены, что хотите удалить эту статью из базы знаний?')) {
       const next = articles.filter(a => a.id !== articleId);
       setArticles(next);
+      deleteArticleFromCloud(articleId);
       if (readingArticle && readingArticle.id === articleId) {
         setReadingArticle(null);
       }
@@ -451,7 +446,8 @@ export default function KnowledgeBaseTab({ articles, setArticles }) {
         if (Array.isArray(imported) && imported.length > 0) {
           if (window.confirm(`Загрузить ${imported.length} статей из файла? Текущие статьи будут обновлены.`)) {
             setArticles(imported);
-            alert('База знаний успешно загружена из файла!');
+            seedArticlesToCloud(imported);
+            alert('База знаний успешно загружена из файла и синхронизирована с облаком!');
           }
         } else {
           alert('Некорректный формат файла базы знаний.');
@@ -571,6 +567,27 @@ export default function KnowledgeBaseTab({ articles, setArticles }) {
           </div>
 
           <div className="kb-top-actions">
+            {isCloudConnected && (
+              <div
+                title="Облачная база данных Supabase подключена и синхронизируется в реальном времени"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  background: 'rgba(16, 185, 129, 0.15)',
+                  border: '1px solid rgba(16, 185, 129, 0.4)',
+                  color: '#10b981',
+                  padding: '6px 12px',
+                  borderRadius: '8px',
+                  fontSize: '0.82rem',
+                  fontWeight: 600
+                }}
+              >
+                <Cloud size={16} />
+                <span>Облако Онлайн</span>
+              </div>
+            )}
+
             <button
               className="btn btn-primary"
               onClick={handleOpenCreateModal}
