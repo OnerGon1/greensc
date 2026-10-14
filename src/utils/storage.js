@@ -5,7 +5,7 @@ const KEYS = {
   PRICES: 'service_prices_v6', // Bumped key for comments column and Android variants
   SETTINGS: 'service_settings_v6',
   HISTORY: 'service_history_v6',
-  KB: 'service_knowledge_base_v1',
+  KB: 'service_knowledge_base_v2', // Bumped key to load updated articles and categories
 };
 
 export const getStoredPrices = () => {
@@ -87,4 +87,5 @@ export const resetAllToDefaults = () => {
     localStorage.removeItem(`service_settings_${v}`);
     localStorage.removeItem(`service_history_${v}`);
   });
+  localStorage.removeItem('service_knowledge_base_v1');
 };
